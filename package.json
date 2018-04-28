@@ -2,7 +2,7 @@
   "name": "json-easy-ref",
   "version": "0.1.0",
   "description": "json ref parsing",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "standard --fix",
     "prepublish": "npm run build",
