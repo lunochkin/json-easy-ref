@@ -1,0 +1,37 @@
+{
+  "name": "json-easy-ref",
+  "version": "0.1.0",
+  "description": "json ref parsing",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard --fix",
+    "prepublish": "npm run build",
+    "build": "babel src -d lib --ignore '**/*.spec.js'"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.3",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "standard": "^11.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/lunochkin/json-easy-ref.git"
+  },
+  "keywords": [
+    "json",
+    "$ref",
+    "parsing"
+  ],
+  "author": "@lunochkin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lunochkin/json-easy-ref/issues"
+  },
+  "homepage": "https://github.com/lunochkin/json-easy-ref#readme",
+  "standard": {
+    "parser": "babel-eslint"
+  }
+}
