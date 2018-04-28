@@ -135,3 +135,23 @@ test('array $id mechanic', () => {
     q: 3
   })
 })
+
+test('custom idToken', () => {
+  const json = [
+    {
+      cname: 'cn',
+      v: {
+        d: 1
+      }
+    },
+    {
+      v: {
+        $ref: '#/$cn/v'
+      }
+    }
+  ]
+
+  const result = jref(json, {idToken: 'cname'})
+
+  expect(result[1].v).toEqual(json[0].v)
+})
