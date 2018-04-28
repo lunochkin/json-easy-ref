@@ -1,3 +1,4 @@
+
 const getByPath = (json, path) => {
   if (path.length === 0) {
     return json

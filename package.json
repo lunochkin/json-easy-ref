@@ -4,7 +4,8 @@
   "description": "json ref parsing",
   "main": "lib/index.js",
   "scripts": {
-    "test": "standard --fix",
+    "test": "standard --fix && jest",
+    "watch": "jest --watch",
     "prepublish": "npm run build",
     "build": "babel src -d lib --ignore '**/*.spec.js'"
   },
@@ -14,6 +15,7 @@
     "babel-eslint": "^8.2.3",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
+    "jest": "^22.4.3",
     "standard": "^11.0.1"
   },
   "repository": {
