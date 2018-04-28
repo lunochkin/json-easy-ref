@@ -10,7 +10,22 @@ const getByPath = (json, path) => {
 
   const [first, ...rest] = path
 
-  return getByPath(json[first], rest)
+  if (first.indexOf('$') !== 0) {
+    return getByPath(json[first], rest)
+  }
+
+  if (!Array.isArray(json)) {
+    return undefined
+  }
+
+  const id = first.substr(1)
+  for (let [index, one] of json.entries()) {
+    if (one.$id === id) {
+      return getByPath(one, rest)
+    }
+  }
+
+  return undefined
 }
 
 const parse = (input, json) => {

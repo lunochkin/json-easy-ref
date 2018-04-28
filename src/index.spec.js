@@ -106,3 +106,32 @@ test('complex array', () => {
 
   expect(result[1].b[0]).toEqual(json[0].a.v[0])
 })
+
+test('array $id mechanic', () => {
+  const json = {
+    a: [
+      {
+        $id: 'key',
+        v: {
+          d: 1,
+          f: 2
+        }
+      }
+    ],
+    b: {
+      v: {
+        $ref: '#/a/$key/v',
+        d: 2,
+        q: 3
+      }
+    }
+  }
+
+  const result = jref(json)
+
+  expect(result.b.v).toEqual({
+    f: 2,
+    d: 2,
+    q: 3
+  })
+})
