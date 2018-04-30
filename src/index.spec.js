@@ -190,6 +190,16 @@ test('relative path', () => {
               $ref: '#/@this/v',
               b: 2
             }
+          },
+          {
+            $id: 'v2',
+            c: {
+              f: 1
+            },
+            v2: {
+              $ref: '#/@this/c',
+              b: 3
+            }
           }
         ]
       }
@@ -203,6 +213,11 @@ test('relative path', () => {
   expect(result.l[0].p[0].v).toEqual({
     a: 1,
     b: 2
+  })
+
+  expect(result.l[0].p[1].v2).toEqual({
+    f: 1,
+    b: 3
   })
 })
 
@@ -247,4 +262,40 @@ test('more complex array', () => {
   const result = jref(json)
 
   expect(result[1].phases[0].c).toEqual(json[0].phases[0].c)
+})
+
+test('recursive linking doesn\'t work', () => {
+  const json = [
+    {
+      $id: 's',
+      phases: [
+        {
+          $id: 'ce',
+          c: {
+            a: 1
+          }
+        }
+      ]
+    },
+    {
+      $id: 'r',
+      phases: [
+        {
+          $id: 'first',
+          c: {
+            $ref: '#/$s/phases/$ce/c'
+          }
+        },
+        {
+          b: {
+            $ref: '#/$this/phases/$first/c'
+          }
+        }
+      ]
+    }
+  ]
+
+  const result = jref(json)
+
+  expect(result[1].phases[1].b).toEqual(json[1].phases[0].c)
 })
