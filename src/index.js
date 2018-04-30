@@ -19,7 +19,7 @@ const getByPath = ({input, path, options}) => {
   }
 
   const id = first.substr(1)
-  for (let [index, one] of input.entries()) {
+  for (let one of input) {
     if (one[options.idToken] === id) {
       return getByPath({input: one, path: rest, options})
     }
@@ -41,7 +41,6 @@ const parse = ({input, json, context, options}) => {
     return jrefInternal({input, json, context, options})
   }
 
-
   let result = {...input}
   const ref = result[options.refToken]
   delete result[options.refToken]
@@ -56,11 +55,14 @@ const parse = ({input, json, context, options}) => {
     return jrefInternal({input: result, json, context, options})
   }
   let refPath = ref.substr(2).split('/')
+
+  let value
   if (refPath[0] === options.thisToken) {
-    refPath = refPath.slice(1)
+    value = getByPath({input: context, path: refPath.slice(1), options})
+  } else {
+    value = getByPath({input: json, path: refPath, options})
   }
 
-  const value = getByPath({input: context, path: refPath, options})
 
   if (typeof value === 'object' && !Array.isArray(value)) {
     result = {

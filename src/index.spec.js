@@ -218,3 +218,33 @@ test('preserving $id values', () => {
 
   expect(result[0].$id).toEqual('asd')
 })
+
+test('more complex array', () => {
+  const json = [
+    {
+      $id: 's',
+      phases: [
+        {
+          $id: 'ce',
+          c: {
+            a: 1
+          }
+        }
+      ]
+    },
+    {
+      $id: 'r',
+      phases: [
+        {
+          c: {
+            $ref: '#/$s/phases/$ce/c'
+          }
+        }
+      ]
+    }
+  ]
+
+  const result = jref(json)
+
+  expect(result[1].phases[0].c).toEqual(json[0].phases[0].c)
+})
