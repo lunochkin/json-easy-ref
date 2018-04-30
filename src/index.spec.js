@@ -299,3 +299,29 @@ test('recursive linking doesn\'t work', () => {
 
   expect(result[1].phases[1].b).toEqual(json[1].phases[0].c)
 })
+
+test('parent token feature', () => {
+  const json = [
+    {
+      $id: 's',
+      phases: [
+        {
+          $id: 'ce',
+          a: 2
+        },
+        {
+          $id: 'b',
+          b: {
+            $ref: '#/@parent/phases/$ce/a'
+          }
+        }
+      ]
+    }
+  ]
+
+  const result = jref(json, {
+    parentToken: '@parent'
+  })
+
+  expect(result[0].phases[1].b).toBe(2)
+})
