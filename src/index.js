@@ -47,7 +47,6 @@ const parse = ({input, json, context, options}) => {
   delete result[options.refToken]
 
   const id = result[options.idToken]
-  delete result[options.idToken]
 
   if (id) {
     context = result

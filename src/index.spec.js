@@ -205,3 +205,16 @@ test('relative path', () => {
     b: 2
   })
 })
+
+test('preserving $id values', () => {
+  const json = [
+    {
+      $id: 'asd',
+      a: 1
+    }
+  ]
+
+  const result = jref(json)
+
+  expect(result[0].$id).toEqual('asd')
+})
