@@ -1,34 +1,34 @@
 
-const getByPath = (json, path, options) => {
+const getByPath = ({input, path, options}) => {
   if (path.length === 0) {
-    return json
+    return input
   }
 
-  if (json == null) {
+  if (input == null) {
     return undefined
   }
 
   const [first, ...rest] = path
 
   if (first.indexOf('$') !== 0) {
-    return getByPath(json[first], rest, options)
+    return getByPath({input: input[first], path: rest, options})
   }
 
-  if (!Array.isArray(json)) {
+  if (!Array.isArray(input)) {
     return undefined
   }
 
   const id = first.substr(1)
-  for (let [index, one] of json.entries()) {
+  for (let [index, one] of input.entries()) {
     if (one[options.idToken] === id) {
-      return getByPath(one, rest, options)
+      return getByPath({input: one, path: rest, options})
     }
   }
 
   return undefined
 }
 
-const parse = (input, json, options) => {
+const parse = ({input, json, context, options}) => {
   if (!input) {
     return input
   }
@@ -38,18 +38,30 @@ const parse = (input, json, options) => {
   }
 
   if (Array.isArray(input)) {
-    return jrefInternal(input, json, options)
+    return jrefInternal({input, json, context, options})
   }
+
 
   let result = {...input}
   const ref = result[options.refToken]
   delete result[options.refToken]
-  if (!ref) {
-    return jrefInternal(result, json, options)
-  }
-  const refPath = ref.substr(2).split('/')
 
-  const value = getByPath(json, refPath, options)
+  const id = result[options.idToken]
+  delete result[options.idToken]
+
+  if (id) {
+    context = result
+  }
+
+  if (!ref) {
+    return jrefInternal({input: result, json, context, options})
+  }
+  let refPath = ref.substr(2).split('/')
+  if (refPath[0] === '$this') {
+    refPath = refPath.slice(1)
+  }
+
+  const value = getByPath({input: context, path: refPath, options})
 
   if (typeof value === 'object' && !Array.isArray(value)) {
     result = {
@@ -60,20 +72,20 @@ const parse = (input, json, options) => {
     result = value
   }
 
-  return jrefInternal(result, json, options)
+  return jrefInternal({input: result, context, json, options})
 }
 
-const jrefInternal = (input, json, options) => {
+const jrefInternal = ({input, json, context, options}) => {
   if (typeof input !== 'object') {
     return input
   }
 
   if (Array.isArray(input)) {
-    return input.map(one => parse(one, json, options))
+    return input.map(one => parse({input: one, json, context, options}))
   }
 
   return Object.keys(input).reduce((agg, key) => {
-    agg[key] = parse(input[key], json, options)
+    agg[key] = parse({input: input[key], json, context, options})
     return agg
   }, {})
 }
@@ -85,7 +97,7 @@ const jref = (json, options) => {
     ...options
   }
 
-  return jrefInternal(json, json, options)
+  return jrefInternal({input: json, json, context: json, options})
 }
 
 export default jref

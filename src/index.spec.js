@@ -175,3 +175,31 @@ test('custom refToken', () => {
 
   expect(result[1].v).toEqual(json[0].v)
 })
+
+test('relative path', () => {
+  const json = {
+    l: [
+      {
+        $id: 'id1',
+        v: {
+          a: 1
+        },
+        p: [
+          {
+            v: {
+              $ref: '#/$this/v',
+              b: 2
+            }
+          }
+        ]
+      }
+    ]
+  }
+
+  const result = jref(json)
+
+  expect(result.l[0].p[0].v).toEqual({
+    a: 1,
+    b: 2
+  })
+})
