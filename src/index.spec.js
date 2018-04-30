@@ -187,7 +187,7 @@ test('relative path', () => {
         p: [
           {
             v: {
-              $ref: '#/$this/v',
+              $ref: '#/@this/v',
               b: 2
             }
           }
@@ -196,7 +196,9 @@ test('relative path', () => {
     ]
   }
 
-  const result = jref(json)
+  const result = jref(json, {
+    thisToken: '@this'
+  })
 
   expect(result.l[0].p[0].v).toEqual({
     a: 1,

@@ -57,7 +57,7 @@ const parse = ({input, json, context, options}) => {
     return jrefInternal({input: result, json, context, options})
   }
   let refPath = ref.substr(2).split('/')
-  if (refPath[0] === '$this') {
+  if (refPath[0] === options.thisToken) {
     refPath = refPath.slice(1)
   }
 
@@ -94,6 +94,7 @@ const jref = (json, options) => {
   options = {
     idToken: '$id',
     refToken: '$ref',
+    thisToken: '$this',
     ...options
   }
 
