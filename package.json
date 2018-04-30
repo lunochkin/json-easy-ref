@@ -1,6 +1,6 @@
 {
   "name": "json-easy-ref",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "json ref parsing",
   "main": "lib/index.js",
   "scripts": {
