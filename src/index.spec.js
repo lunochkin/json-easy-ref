@@ -155,3 +155,23 @@ test('custom idToken', () => {
 
   expect(result[1].v).toEqual(json[0].v)
 })
+
+test('custom refToken', () => {
+  const json = [
+    {
+      $id: 'cn',
+      v: {
+        d: 1
+      }
+    },
+    {
+      v: {
+        '@ref': '#/$cn/v'
+      }
+    }
+  ]
+
+  const result = jref(json, {refToken: '@ref'})
+
+  expect(result[1].v).toEqual(json[0].v)
+})

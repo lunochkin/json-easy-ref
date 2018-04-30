@@ -41,11 +41,13 @@ const parse = (input, json, options) => {
     return jrefInternal(input, json, options)
   }
 
-  let {$ref, ...result} = input
-  if (!$ref) {
+  let result = {...input}
+  const ref = result[options.refToken]
+  delete result[options.refToken]
+  if (!ref) {
     return jrefInternal(result, json, options)
   }
-  const refPath = $ref.substr(2).split('/')
+  const refPath = ref.substr(2).split('/')
 
   const value = getByPath(json, refPath, options)
 
@@ -79,6 +81,7 @@ const jrefInternal = (input, json, options) => {
 const jref = (json, options) => {
   options = {
     idToken: '$id',
+    refToken: '$ref',
     ...options
   }
 
