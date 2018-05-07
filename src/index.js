@@ -1,5 +1,5 @@
 
-const getByPath = ({input, path, options}) => {
+const getByPathInternal = ({input, path, options}) => {
   if (path.length === 0) {
     return input
   }
@@ -11,7 +11,7 @@ const getByPath = ({input, path, options}) => {
   const [first, ...rest] = path
 
   if (first.indexOf('$') !== 0) {
-    return getByPath({input: input[first], path: rest, options})
+    return getByPathInternal({input: input[first], path: rest, options})
   }
 
   if (!Array.isArray(input)) {
@@ -21,7 +21,7 @@ const getByPath = ({input, path, options}) => {
   const id = first.substr(1)
   for (let one of input) {
     if (one[options.idToken] === id) {
-      return getByPath({input: one, path: rest, options})
+      return getByPathInternal({input: one, path: rest, options})
     }
   }
 
@@ -59,13 +59,12 @@ const parse = ({input, json, context, parentContext, options}) => {
 
   let value
   if (refPath[0] === options.thisToken) {
-    value = getByPath({input: context, path: refPath.slice(1), options})
+    value = getByPathInternal({input: context, path: refPath.slice(1), options})
   } else if (refPath[0] === options.parentToken) {
-    value = getByPath({input: parentContext, path: refPath.slice(1), options})
+    value = getByPathInternal({input: parentContext, path: refPath.slice(1), options})
   } else {
-    value = getByPath({input: json, path: refPath, options})
+    value = getByPathInternal({input: json, path: refPath, options})
   }
-
 
   if (typeof value === 'object' && !Array.isArray(value)) {
     result = {
@@ -94,16 +93,31 @@ const jrefInternal = ({input, json, context, parentContext, options}) => {
   }, {})
 }
 
+const defaultOptions = {
+  idToken: '$id',
+  refToken: '$ref',
+  thisToken: '$this',
+  parentToken: '$parent'
+}
+
 const jref = (json, options) => {
   options = {
-    idToken: '$id',
-    refToken: '$ref',
-    thisToken: '$this',
-    parentToken: '$parent',
+    ...defaultOptions,
     ...options
   }
 
   return jrefInternal({input: json, json, context: json, parentContext: json, options})
 }
+
+const getByPath = (json, path, options) => {
+  options = {
+    ...defaultOptions,
+    ...options
+  }
+
+  return getByPathInternal({input: json, path, options})
+}
+
+export {getByPath}
 
 export default jref
